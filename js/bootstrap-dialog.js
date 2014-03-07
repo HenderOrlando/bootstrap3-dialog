@@ -421,8 +421,10 @@
             $button.prop('id', button.id);
 
             // Icon
-            if (typeof button.icon !== undefined && $.trim(button.icon) !== '') {
-                $button.append(this.createButtonIcon(button.icon));
+            if(typeof button.icon !== undefined){
+                if((typeof button.icon === 'object' && button.icon.icons.length > 0) || $.trim(button.icon) !== ''){
+                    $button.append(this.createButtonIcon(button.icon));
+                }
             }
 
             // Label
@@ -524,7 +526,20 @@
         },
         createButtonIcon: function(icon) {
             var $icon = $('<span></span>');
-            $icon.addClass(this.getNamespace('button-icon')).addClass(icon);
+            if( typeof icon.icons !== 'undefined'){
+                if((typeof icon.stacked === 'boolean' && icon.stacked) || (typeof icon.stacked === 'string')){
+                    $icon.addClass('fa-stack');
+                    if(typeof icon.stacked === 'string'){
+                        $icon.addClass(icon.stacked);
+                    }
+                }
+                $.each(icon.icons, function(i,icono){
+                    var $icon_ = $('<span></span>').addClass('fa-fw');
+                    $icon.append($icon_.addClass($.trim(icono.icon)));
+                });
+            }else{
+                $icon.addClass(this.getNamespace('button-icon')).addClass(icon);
+            }
 
             return $icon;
         },
